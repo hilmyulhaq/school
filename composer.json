@@ -1,0 +1,15 @@
+{
+    "name": "acer/school",
+    "autoload": {
+        "psr-4": {
+            "Acer\\School\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hilmyulhaq",
+            "email": "hilmydhiyaulhaq2905@gmail.com"
+        }
+    ],
+    "require": {}
+}

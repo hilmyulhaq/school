@@ -65,7 +65,8 @@ class GTB_PageRank implements tbr, pref
 
   public function getPageRank() {
 	$host  = $this->GTB_SERVER['host'][0];
-	$tld   = (strlen($this->GTB_SUGESSTED_TLD) > 0) ? $this->GTB_SUGESSTED_TLD : $this->PREFERED_TLD;
+	$tld = is_array($this->GTB_SUGESSTED_TLD) ? implode('', $this->GTB_SUGESSTED_TLD) : $this->GTB_SUGESSTED_TLD;
+  $tld = (strlen($tld) > 0) ? $tld : (is_array($this->PREFERED_TLD) ? implode('', $this->PREFERED_TLD) : $this->PREFERED_TLD);
 	$path  = $this->GTB_SERVER['path'];
 	$tbUrl = 'http://' . $host . $tld . $path;
 	$qStrings = self::getQueryStrings();
@@ -367,7 +368,7 @@ class GTB_ieHash extends GTB_PageRank
     $NumHashLength = strlen($NumHashString);
     $CheckByte = 0;
     for ($i=($NumHashLength-1); $i>=0; $i--) {
-        $Num = $NumHashString{$i};
+        $Num = $NumHashString[$i];
         $CheckByte += (1===($i % 2)) ? (int)((($Num*2)/10)+(($Num*2)%10)) : $Num;
     }   $CheckByte %= 10;
     if ($CheckByte !== 0) {

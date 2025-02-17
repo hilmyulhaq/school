@@ -47,11 +47,11 @@ class TwoCheckout_Lib {
 		$this->fields[$field] = $value;
 	}
 
-	function remove_field($name)
+	public function __construct()
 	{
-		//Remove parameters from form
-		unset($this->fields[$field]);
+		$this->fields = [];
 	}
+	
 
 	function submit_form() 
 	{

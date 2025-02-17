@@ -917,13 +917,28 @@ class Admin extends CI_Controller {
 
     function download_academic_syllabus($academic_syllabus_code){
         $get_file_name = $this->db->get_where('academic_syllabus', array('academic_syllabus_code' => $academic_syllabus_code))->row()->file_name;
-        // Loading download from helper.
+        
+        // Ensure the filename is not empty/null
+        if (!$get_file_name) {
+            show_error('File not found.');
+            return;
+        }
+    
+        // Loading download helper
         $this->load->helper('download');
-        $get_download_content = file_get_contents('uploads/syllabus' . $get_file_name);
-        $name = $file_name;
-        force_download($name, $get_download_content);
+    
+        $file_path = 'uploads/syllabus/' . $get_file_name;
+    
+        // Check if file exists before attempting to read
+        if (!file_exists($file_path)) {
+            show_error('File does not exist.');
+            return;
+        }
+    
+        $get_download_content = file_get_contents($file_path);
+        force_download($get_file_name, $get_download_content);
     }
-
+    
     function get_academic_syllabus ($class_id = null){
 
         if($class_id == '')
@@ -1434,101 +1449,91 @@ class Admin extends CI_Controller {
 
 
     /***********  The function below manages school marks ***********************/
-    function marks ($exam_id = null, $class_id = null, $student_id = null){
+    function marks ($exam_id = null, $class_id = null, $student_id = null) {
 
-            if($this->input->post('operation') == 'selection'){
-
-                $page_data['exam_id']       =  $this->input->post('exam_id'); 
-                $page_data['class_id']      =  $this->input->post('class_id');
-                $page_data['student_id']    =  $this->input->post('student_id');
-
-                if($page_data['exam_id'] > 0 && $page_data['class_id'] > 0 && $page_data['student_id'] > 0){
-
-                    redirect(base_url(). 'admin/marks/'. $page_data['exam_id'] .'/' . $page_data['class_id'] . '/' . $page_data['student_id'], 'refresh');
-                }
-                else{
-                    $this->session->set_flashdata('error_message', get_phrase('Pleasen select something'));
-                    redirect(base_url(). 'admin/marks', 'refresh');
-                }
+        if($this->input->post('operation') == 'selection') {
+            $page_data['exam_id']    = $this->input->post('exam_id'); 
+            $page_data['class_id']   = $this->input->post('class_id');
+            $page_data['student_id'] = $this->input->post('student_id');
+    
+            if (!empty($page_data['exam_id']) && !empty($page_data['class_id']) && !empty($page_data['student_id'])) {
+                redirect(base_url() . 'admin/marks/' . $page_data['exam_id'] . '/' . $page_data['class_id'] . '/' . $page_data['student_id'], 'refresh');
+            } else {
+                $this->session->set_flashdata('error_message', get_phrase('Please select something'));
+                redirect(base_url() . 'admin/marks', 'refresh');
             }
-
-            if($this->input->post('operation') == 'update_student_subject_score'){
-
-                $select_subject_first = $this->db->get_where('subject', array('class_id' => $class_id ))->result_array();
-                    foreach ($select_subject_first as $key => $dispay_subject_from_subject_table){
-
-                        $page_data['class_score1']  =   $this->input->post('class_score1_' . $dispay_subject_from_subject_table['subject_id']);
-                        $page_data['class_score2']  =   $this->input->post('class_score2_' . $dispay_subject_from_subject_table['subject_id']);
-                        $page_data['class_score3']  =   $this->input->post('class_score3_' . $dispay_subject_from_subject_table['subject_id']);
-                        $page_data['exam_score']    =   $this->input->post('exam_score_' . $dispay_subject_from_subject_table['subject_id']);
-                        $page_data['comment']       =   $this->input->post('comment_' . $dispay_subject_from_subject_table['subject_id']);
-
-                        $this->db->where('mark_id', $this->input->post('mark_id_' . $dispay_subject_from_subject_table['subject_id']));
-                        $this->db->update('mark', $page_data);  
-                    }
-
-                    $this->session->set_flashdata('flash_message', get_phrase('Data Updated Successfully'));
-                    redirect(base_url(). 'admin/marks/'. $this->input->post('exam_id') .'/' . $this->input->post('class_id') . '/' . $this->input->post('student_id'), 'refresh');
+        }
+    
+        if ($this->input->post('operation') == 'update_student_subject_score') {
+            if ($class_id) {
+                $subjects = $this->db->get_where('subject', array('class_id' => $class_id))->result_array();
+                foreach ($subjects as $subject) {
+                    $page_data = [
+                        'class_score1' => $this->input->post('class_score1_' . $subject['subject_id']),
+                        'class_score2' => $this->input->post('class_score2_' . $subject['subject_id']),
+                        'class_score3' => $this->input->post('class_score3_' . $subject['subject_id']),
+                        'exam_score'   => $this->input->post('exam_score_' . $subject['subject_id']),
+                        'comment'      => $this->input->post('comment_' . $subject['subject_id']),
+                    ];
+    
+                    $this->db->where('mark_id', $this->input->post('mark_id_' . $subject['subject_id']));
+                    $this->db->update('mark', $page_data);
+                }
+    
+                $this->session->set_flashdata('flash_message', get_phrase('Data Updated Successfully'));
+                redirect(base_url() . 'admin/marks/' . $exam_id . '/' . $class_id . '/' . $student_id, 'refresh');
             }
-
-        $page_data['exam_id']       =   $exam_id;
-        $page_data['class_id']      =   $class_id;
-        $page_data['student_id']    =   $student_id;
-        $page_data['subject_id']   =    $subject_id;
-        $page_data['page_name']     =   'marks';
-        $page_data['page_title']    = get_phrase('Student Marks');
+        }
+    
+        $page_data = compact('exam_id', 'class_id', 'student_id');
+        $page_data['page_name']  = 'marks';
+        $page_data['page_title'] = get_phrase('Student Marks');
         $this->load->view('backend/index', $page_data);
     }
-    /***********  The function that manages school marks ends here ***********************/
-
-
-
-    /***********  The function below manages school marks ***********************/
-     function student_marksheet_subject ($exam_id = null, $class_id = null, $subject_id = null){
-
-        if($this->input->post('operation') == 'selection'){
-
-            $page_data['exam_id']       =  $this->input->post('exam_id'); 
-            $page_data['class_id']      =  $this->input->post('class_id');
-            $page_data['subject_id']    =  $this->input->post('subject_id');
-
-            if($page_data['exam_id'] > 0 && $page_data['class_id'] > 0 && $page_data['subject_id'] > 0){
-
-                redirect(base_url(). 'admin/student_marksheet_subject/'. $page_data['exam_id'] .'/' . $page_data['class_id'] . '/' . $page_data['subject_id'], 'refresh');
-            }
-            else{
-                $this->session->set_flashdata('error_message', get_phrase('Pleasen select something'));
-                redirect(base_url(). 'admin/student_marksheet_subject', 'refresh');
+    
+    /********* Fix student_marksheet_subject Function *********/
+    function student_marksheet_subject ($exam_id = null, $class_id = null, $subject_id = null) {
+    
+        if ($this->input->post('operation') == 'selection') {
+            $page_data['exam_id']    = $this->input->post('exam_id'); 
+            $page_data['class_id']   = $this->input->post('class_id');
+            $page_data['subject_id'] = $this->input->post('subject_id');
+    
+            if (!empty($page_data['exam_id']) && !empty($page_data['class_id']) && !empty($page_data['subject_id'])) {
+                redirect(base_url() . 'admin/student_marksheet_subject/' . $page_data['exam_id'] . '/' . $page_data['class_id'] . '/' . $page_data['subject_id'], 'refresh');
+            } else {
+                $this->session->set_flashdata('error_message', get_phrase('Please select something'));
+                redirect(base_url() . 'admin/student_marksheet_subject', 'refresh');
             }
         }
-
-        if($this->input->post('operation') == 'update_student_subject_score'){
-
-            $select_student_first = $this->db->get_where('student', array('class_id' => $class_id ))->result_array();
-                foreach ($select_student_first as $key => $dispay_student_from_student_table){
-
-                    $page_data['class_score1']  =   $this->input->post('class_score1_' . $dispay_student_from_student_table['student_id']);
-                    $page_data['class_score2']  =   $this->input->post('class_score2_' . $dispay_student_from_student_table['student_id']);
-                    $page_data['class_score3']  =   $this->input->post('class_score3_' . $dispay_student_from_student_table['student_id']);
-                    $page_data['exam_score']    =   $this->input->post('exam_score_' . $dispay_student_from_student_table['student_id']);
-                    $page_data['comment']       =   $this->input->post('comment_' . $dispay_student_from_student_table['student_id']);
-
-                    $this->db->where('mark_id', $this->input->post('mark_id_' . $dispay_student_from_student_table['student_id']));
-                    $this->db->update('mark', $page_data);  
+    
+        if ($this->input->post('operation') == 'update_student_subject_score') {
+            if ($class_id) {
+                $students = $this->db->get_where('student', array('class_id' => $class_id))->result_array();
+                foreach ($students as $student) {
+                    $page_data = [
+                        'class_score1' => $this->input->post('class_score1_' . $student['student_id']),
+                        'class_score2' => $this->input->post('class_score2_' . $student['student_id']),
+                        'class_score3' => $this->input->post('class_score3_' . $student['student_id']),
+                        'exam_score'   => $this->input->post('exam_score_' . $student['student_id']),
+                        'comment'      => $this->input->post('comment_' . $student['student_id']),
+                    ];
+    
+                    $this->db->where('mark_id', $this->input->post('mark_id_' . $student['student_id']));
+                    $this->db->update('mark', $page_data);
                 }
-
+    
                 $this->session->set_flashdata('flash_message', get_phrase('Data Updated Successfully'));
-                redirect(base_url(). 'admin/student_marksheet_subject/'. $this->input->post('exam_id') .'/' . $this->input->post('class_id') . '/' . $this->input->post('subject_id'), 'refresh');
+                redirect(base_url() . 'admin/student_marksheet_subject/' . $exam_id . '/' . $class_id . '/' . $subject_id, 'refresh');
+            }
         }
-
-    $page_data['exam_id']       =   $exam_id;
-    $page_data['class_id']      =   $class_id;
-    $page_data['student_id']    =   $student_id;
-    $page_data['subject_id']   =    $subject_id;
-    $page_data['page_name']     =   'student_marksheet_subject';
-    $page_data['page_title']    = get_phrase('Student Marks');
-    $this->load->view('backend/index', $page_data);
+    
+        $page_data = compact('exam_id', 'class_id', 'subject_id');
+        $page_data['page_name']  = 'student_marksheet_subject';
+        $page_data['page_title'] = get_phrase('Student Marks');
+        $this->load->view('backend/index', $page_data);
     }
+    
     /***********  The function that manages school marks ends here ***********************/
 
     /***********  The function below manages school event ***********************/

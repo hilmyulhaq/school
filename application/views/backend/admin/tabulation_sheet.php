@@ -7,7 +7,7 @@
 			
                     <!----CREATION FORM STARTS---->
 
-                	<?php echo form_open(base_url() . 'report/examMarkReport' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top', 'enctype' => 'multipart/form-data'));?>
+                	<?php echo form_open(base_url() . 'admin/tabulation_sheet' , array('class' => 'form-horizontal form-groups-bordered validate','target'=>'_top', 'enctype' => 'multipart/form-data'));?>
                     
                             <div class="form-group">
                                     <label class="col-md-12" for="example-text"><?php echo get_phrase('Exam');?></label>
@@ -97,7 +97,7 @@
     <div class="row">
 	<div class="col-sm-12">
 		<div class="panel panel-info">
-            <div class="panel-heading"> <i class="fa fa-plus"></i>&nbsp;&nbsp;<?php echo get_phrase('enter_student_score'); ?></div>
+            <div class="panel-heading"> <i class="fa fa-plus"></i>&nbsp;&nbsp;<?php echo get_phrase('student_score'); ?></div>
                 <div class="panel-body table-responsive">
 							   
     					<table cellpadding="0" cellspacing="0" border="0" class="table">
@@ -108,6 +108,7 @@
 										<td><?php echo get_phrase('2nd score');?></td>
 										<td><?php echo get_phrase('3rd score');?></td>
 										<td><?php echo get_phrase('exam score');?></td>
+										<td><?php echo get_phrase('total score');?></td>
 										<td><?php echo get_phrase('comment');?></td>
 									</tr>
 								</thead>
@@ -121,6 +122,8 @@
                 $update_subject_marks = $query->result_array();
 
                 foreach ($update_subject_marks as $key => $general_select):
+
+                    $sum_all_classes_and_exam_score = $general_select['class_score1'] + $general_select['class_score2'] + $general_select['class_score3'] + $general_select['exam_score'];
 
                
            ?>
@@ -142,22 +145,26 @@
 							<td>
 								<?php echo $general_select['exam_score'];?>
 							</td>
+                            <td>
+								<?php echo $sum_all_classes_and_exam_score;?>
+							</td>
 			
 							<td>
 								<?php echo $general_select['comment'];?>
 							</td>
+
+                           
         <?php 
             endforeach;
                 endforeach;
         ?>
 
+                
                             
                          	
                     </tbody>
-               </table>    
-
-               <h3 align="center"> Student Score (Over 100)</h3>
-                <div id="bar_chartdiv"></div>             
+               </table> 
+               <a href="<?php echo base_url(). 'admin/print_mass_report_card/' . $class_id . '/' . $exam_id; ?>" ><button class="btn btn-success btn-rounded btn-sm btn-block"><?php echo get_phrase('Mass Report');?></button></a>     
             
 			</div>
         </div>
@@ -185,91 +192,5 @@
     }
 </script>
 
-<style>
-    #bar_chartdiv {
-        width		: 100%;
-        height		: 397px;
-        font-size	: 11px;
-    }	
-	.amcharts-chart-div a{
-    display:none !important;
-    }									
-</style>
-
-<script>
-        var chart = AmCharts.makeChart("bar_chartdiv", {
-            "theme": "light",
-            "type": "serial",
-            "startDuration": 2,
-            "dataProvider": [
-        
-        <?php $select_sunject_with_class_id  =   $this->crud_model->get_subjects_by_class($class_id);
-            foreach ($select_sunject_with_class_id as $key => $class_subject_exam_student): 
-
-                $verify_data = array('exam_id' => $exam_id, 'class_id' => $class_id, 'student_id' => $student_id, 'subject_id' => $class_subject_exam_student['subject_id']);
-                $query = $this->db->get_where('mark', $verify_data);
-                $update_subject_marks = $query->result_array();
-
-                foreach ($update_subject_marks as $key => $general_select):
-
-                    $sum_Class_score_and_exam_score = $general_select['class_score1'] + $general_select['class_score2'] + $general_select['class_score3'] + $general_select['exam_score']; 
-               
-           ?>
 
 
-                    ,{
-                        "country": "<?php echo $class_subject_exam_student['name'];?>",
-                        "visits": "<?php echo $sum_Class_score_and_exam_score;?>",
-                        "color": "#99BDF9"
-                    },
-                <?php endforeach;
-                endforeach;?>
-
-            ],
-            "valueAxes": [{
-                    "position": "left",
-                    "title": "Student Score in Subject"
-                }],
-            "graphs": [{
-                    "balloonText": "[[category]]: <b>[[value]]</b>",
-                    "fillColorsField": "color",
-                    "fillAlphas": 1,
-                    "lineAlpha": 0.1,
-                    "type": "column",
-                    "valueField": "visits"
-                }],
-            "depth3D": 20,
-            "angle": 30,
-            "chartCursor": {
-                "categoryBalloonEnabled": true,
-                "cursorAlpha": 0,
-                "zoomable": false
-            },
-            "categoryField": "country",
-            "categoryAxis": {
-                "gridPosition": "start",
-                "labelRotation": 90,
-                "position": "bottom",
-                "title": "All Subjects",
-            },
-            "export": {
-                "enabled": true
-            }
-
-        });
-        jQuery('.chart-input').off().on('input change', function () {
-            var property = jQuery(this).data('property');
-            var target = chart;
-            chart.startDuration = 0;
-
-            if (property == 'topRadius') {
-                target = chart.graphs[0];
-                if (this.value == 0) {
-                    this.value = undefined;
-                }
-            }
-
-            target[property] = this.value;
-            chart.validateNow();
-        });
-    </script>

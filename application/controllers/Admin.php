@@ -1584,5 +1584,64 @@ class Admin extends CI_Controller {
         $this->session->set_flashdata('flash_message', get_phrase('Data updated successfully'));
         redirect(base_url(). 'admin/newAdministrator', 'refresh');
     }
+    
 
+    /***********  The function that view tabulation sheet***********************/
+    function tabulation_sheet ($exam_id = null, $class_id = null, $student_id = null){
+
+        if($this->input->post('operation') == 'selection'){
+
+            $page_data['exam_id']       =  $this->input->post('exam_id'); 
+            $page_data['class_id']      =  $this->input->post('class_id');
+            $page_data['student_id']    =  $this->input->post('student_id');
+
+            if($page_data['exam_id'] > 0 && $page_data['class_id'] > 0 && $page_data['student_id'] > 0){
+
+                redirect(base_url(). 'admin/tabulation_sheet/'. $page_data['exam_id'] .'/' . $page_data['class_id'] . '/' . $page_data['student_id'], 'refresh');
+            }
+            else{
+                $this->session->set_flashdata('error_message', get_phrase('Pleasen select something'));
+                redirect(base_url(). 'admin/tabulation_sheet', 'refresh');
+            }
+        }
+    $page_data['exam_id']       =   $exam_id;
+    $page_data['class_id']      =   $class_id;
+    $page_data['student_id']    =   $student_id;
+    $page_data['subject_id']   =    $subject_id;
+    $page_data['page_name']     =   'tabulation_sheet';
+    $page_data['page_title']    = get_phrase('Student Marks');
+    $this->load->view('backend/index', $page_data);
+}
+    /***********  The function that view tabulation sheet ends here ***********************/
+
+     /***********  The function that set language ***********************/
+     
+     function set_language($lang){
+
+        $this->session->set_userdata('language', $lang);
+        redirect(base_url(). 'admin', 'refresh');
+        recache();
+
+     }
+     /***********  The function that set language ends here***********************/
+
+     
+     /***********  The function that print mass report card ***********************/
+
+     function print_mass_report_card($class_id, $exam_id){
+
+        $page_data['exam_id']       =   $exam_id;
+        $page_data['class_id']      =   $class_id;
+    
+        $page_data['page_name']     =   'print_mass_report_card';
+        $page_data['page_title']    = get_phrase('Terminal Report');
+        $this->load->view('backend/index', $page_data);
+
+     }
+
+     
+     /***********  The function that print mass report card ends here ***********************/
+
+
+    
 }

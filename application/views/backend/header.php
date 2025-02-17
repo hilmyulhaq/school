@@ -1,7 +1,7 @@
  <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top m-b-0">
             <div class="navbar-header"> <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse"><i class="ti-menu"></i></a>
-                <div class="top-left-part"><a class="logo" href="#"><b><img src="<?php echo base_url();?>uploads/logo.png" width="50" height="50" alt="home" /></b><span class="hidden-xs"><strong>CLONE</strong>SCHOOL</span></a></div>
+                <div class="top-left-part"><a class="logo" href="#"><b><img src="<?php echo base_url();?>uploads/logo.png" width="50" height="50" alt="home" /></b><span class="hidden-xs"><strong>APLIKASI</strong> ALSID</span></a></div>
                     <ul class="nav navbar-top-links navbar-left hidden-xs">
                         <li><a href="javascript:void(0)" class="open-close hidden-xs waves-effect waves-light"><i class="icon-arrow-left-circle ti-menu"></i></a></li>
                         <li>
@@ -50,61 +50,47 @@
                 </li>/.dropdown-messages -->
                     <!-- /.dropdown -->
 
-            <!-- <li class="dropdown"> 
-                <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#"><i class="icon-note"></i>
-                    <div class="notify"><span class="heartbit"></span><span class="point"></span></div>
+            <li class="dropdown"> 
+                <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="#">
+                   
+
+                    <?php 
+                    if($set_language = $this->session->userdata('language')){
+
+                    } else{
+                        $set_language = $this->db->get_where('settings', array('type'=> 'language'))->row()->description;
+                    }
+
+                    $list_image = $this->db->get_where('language_list',array('db_field' =>$set_language))->row()->db_field;
+                    $list_image = trim($list_image);
+                    $list_name = $this->db->get_where('language_list',array('db_field' =>$set_language))->row()->name;
+
+                    
+       
+
+                    ?>
+                    
+
+                   <img src="<?php echo base_url();?>optimum/flag/<?php echo $list_image;?>.png" width="16px" height="16px"> <?php echo $list_name;?> <i class="fa fa-caret-down"></i>
+
                 </a>
                     <ul class="dropdown-menu dropdown-tasks animated slideInUp">
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <p> <strong>Task 1</strong> <span class="pull-right text-muted">40% Complete</span> </p>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
-                                        </div>
-                                </div>
+
+                    <?php $select_all_languages_from_language_table = $this->db->get_where('language_list', array('status' => 'ok'))->result_array();
+                        foreach($select_all_languages_from_language_table as $key => $selected_languages):?>
+
+                        <li <?php if($set_language == trim($selected_languages['db_field'])) { ?> class="active" <?php }?>>
+                            
+                            <a class="set_langs" data-href="<?php echo base_url();?>admin/set_language/<?php echo $selected_languages['db_field'];?>">
+                                <img src="<?php echo base_url();?>optimum/flag/<?php echo trim($selected_languages['db_field']);?>.png" width="16px" height="16px">  <?php echo $selected_languages['name'];?>
+
                             </a>
                         </li>
-                        <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <p> <strong>Task 2</strong> <span class="pull-right text-muted">20% Complete</span> </p>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"> <span class="sr-only">20% Complete</span> </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <p> <strong>Task 3</strong> <span class="pull-right text-muted">60% Complete</span> </p>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"> <span class="sr-only">60% Complete (warning)</span> </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        <li class="divider"></li>
-                            <li>
-                                <a href="#">
-                                    <div>
-                                        <p> <strong>Task 4</strong> <span class="pull-right text-muted">80% Complete</span> </p>
-                                        <div class="progress progress-striped active">
-                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"> <span class="sr-only">80% Complete (danger)</span> </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a class="text-center" href="#"> <strong>See All Tasks</strong> <i class="fa fa-angle-right"></i> </a>
-                            </li>
+                        <?php endforeach;?>
+                            
                         </ul>
                         
-                    </li> /.dropdown-tasks -->
+                    </li> 
 
 
                     
@@ -155,3 +141,19 @@
             <!-- /.navbar-top-links -->
             <!-- /.navbar-static-side -->
         </nav>
+
+        <script> type="text/javascript">
+        $(document).ready(function(){
+            $('.set_langs').on('click', function(){
+                var lang_url = $(this).data('href');
+                $.ajax({url: lang_url, success: function (result){
+                    location.reload();
+                }});
+
+            });
+
+        });
+
+
+
+        </script>

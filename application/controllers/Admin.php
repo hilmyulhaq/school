@@ -1653,6 +1653,21 @@ class Admin extends CI_Controller {
 
          /***********  The function that creates barcode ends here ***********************/
 
+        
+          /***********  The function that creates student mass identity card ***********************/
+         function studentMassIdentityCard(){
+            $page_data['page_name']     =   'studentMassIdentityCard';
+            $page_data['page_title']    = get_phrase('Mass Identity Card');
+            $this->load->view('backend/index', $page_data);
+                
+         }
 
+        /***********  The function that creates student mass identity card ends here ***********************/
+
+        function studentMassIdentityCardPage($class_id){
+
+            $page_data['class_id'] = $class_id;
+            $this->load->view('backend/admin/studentMassIdentityCardPage', $page_data);
+        }
     
 }

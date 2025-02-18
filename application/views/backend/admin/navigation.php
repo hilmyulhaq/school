@@ -192,6 +192,7 @@
                     $page_name == 'student_class' ||
                     $page_name == 'student_information' ||
                     $page_name == 'view_student' ||
+                    $page_name == 'studentMassIdentityCard'||
                     $page_name == 'searchStudent')
                 echo 'opened active has-sub';
             ?> ">
@@ -240,6 +241,13 @@
                         <a href="<?php echo base_url(); ?>socialcategory/socialCategory">
                         <i class="fa fa-angle-double-right p-r-10"></i>
                              <span class="hide-menu"><?php echo get_phrase('Social Category'); ?></span>
+                        </a>
+     </li>
+
+     <li class="<?php if ($page_name == 'studentMassIdentityCard') echo 'active'; ?> ">
+                        <a href="<?php echo base_url(); ?>admin/studentMassIdentityCard">
+                        <i class="fa fa-angle-double-right p-r-10"></i>
+                             <span class="hide-menu"><?php echo get_phrase('Student ID Card'); ?></span>
                         </a>
      </li>
         

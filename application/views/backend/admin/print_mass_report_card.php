@@ -235,6 +235,7 @@
 							</table>
 						</div>
 					</div>
+					<hr>
                     <?php endforeach;?>
 				<hr />
 				<button id="print" class="btn btn-info btn-rounded btn-block btn-sm pull-right" type="button"> <span><i class="fa fa-print"></i>&nbsp;Print</span> </button>

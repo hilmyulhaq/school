@@ -33,6 +33,8 @@
 				     <a href="<?php echo base_url();?>admin/edit_student/<?php echo $student['student_id'];?>" ><button type="button" class="btn btn-info btn-circle btn-xs"><i class="fa fa-pencil"></i></button></a>
 					 <a href="#" onclick="confirm_modal('<?php echo base_url();?>admin/new_student/delete/<?php echo $student['student_id'];?>');"><button type="button" class="btn btn-danger btn-circle btn-xs"><i class="fa fa-times"></i></button></a>
                      <a onclick="showAjaxModal('<?php echo base_url();?>modal/popup/resetstudentPassword/<?php echo $student['student_id'];?>')" class="btn btn-success btn-circle btn-xs"><i class="fa fa-key"></i></a>
+                        
+                     <a onclick="showAjaxModal('<?php echo base_url();?>modal/popup/studentIdentityCard/<?php echo $student['student_id'];?>')" class="btn btn-info btn-circle btn-xs"><i class="fa fa-hospital-o"></i></a>
 
 			
                            

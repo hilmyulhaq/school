@@ -18,6 +18,8 @@ class Admin extends CI_Controller {
                 $this->load->model('event_model');                      // Load Apllication Model Here
                 $this->load->model('language_model');                      // Load Apllication Model Here
                 $this->load->model('admin_model');                      // Load Apllication Model Here
+                $this->load->model('Barcode_model');                    //Load Barcode Model Here
+                $this->load->library('phpqrcode/qrlib');                //Loading Qr From The Library
     }
 
     /**default functin, redirects to login page if no admin logged in yet***/
@@ -1641,6 +1643,15 @@ class Admin extends CI_Controller {
 
      
      /***********  The function that print mass report card ends here ***********************/
+
+        /***********  The function that creates barcode ***********************/
+
+        function create_barcode($student_id){
+            return $this->Barcode_model->create_barcode($student_id);
+        } 
+
+
+         /***********  The function that creates barcode ends here ***********************/
 
 
     

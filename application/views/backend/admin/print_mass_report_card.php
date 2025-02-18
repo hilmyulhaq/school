@@ -116,10 +116,12 @@
                                     )); 
                                         if($obtained_mark_query->num_rows() > 0){
 
-                                            $class_score_one = $obtained_mark_query->row()->class_score1;
-                                            $class_score_two = $obtained_mark_query->row()->class_score2;
-                                            $class_score_three = $obtained_mark_query->row()->class_score3;
-                                            $exam_score = $obtained_mark_query->row()->exam_score;
+                                            $class_score_one         = $obtained_mark_query->row()->class_score1;
+                                            $class_score_two         = $obtained_mark_query->row()->class_score2;
+                                            $class_score_three       = $obtained_mark_query->row()->class_score3;
+                                            $exam_score              = $obtained_mark_query->row()->exam_score;
+                                            $total_score             = $class_score_one + $class_score_two + $class_score_three + $exam_score;
+                                            $average_score           = $total_score/4;
                                         }
 
                                     ?>
@@ -128,10 +130,45 @@
 										<td><?php echo $class_score_two;?></td>
 										<td><?php echo $class_score_three;?></td>
 										<td><?php echo $exam_score;?></td>
-										<td></td>
-										<td></td>
-										<td></td
-										<td></td>
+										<td><?php echo $total_score;?></td>
+										<td><?php echo $average_score;?></td>
+										<td>
+                                        
+                                            <?php 
+                                                if ($total_score >= 85) {
+                                                    echo '<p style="color:green">A</p>';
+                                                } elseif ($total_score < 70 && $total_score =='60') {
+                                                    echo '<p style="color:blue">B</p>';
+                                                } elseif ($total_score < 60 && $total_score == '50') {
+                                                    echo '<p style="color:orange">C</p>';
+                                                } elseif ($total_score < 50 && $total_score == '45') {
+                                                    echo '<p style="color:red">D</p>';
+                                                } elseif ($total_score < 45 && $total_score == '40') {
+                                                    echo '<p style="color:brown">E</p>';
+                                                } else {
+                                                    echo '<p style="color:black">F</p>';
+                                                }
+                                            ?>
+
+
+                                        </td>
+										<td>
+                                                <?php 
+                                                if ($total_score >= 85) {
+                                                    echo '<p style="color:green">Excellent</p>';
+                                                } elseif ($total_score >= 75) {
+                                                    echo '<p style="color:blue">Very Good</p>';
+                                                } elseif ($total_score >= 65) {
+                                                    echo '<p style="color:orange">Good</p>';
+                                                } elseif ($total_score >= 50) {
+                                                    echo '<p style="color:red">Fair</p>';
+                                                } elseif ($total_score >= 40) {
+                                                    echo '<p style="color:brown">Poor</p>';
+                                                } else {
+                                                    echo '<p style="color:black">Failed</p>';
+                                                }
+                                                ?>
+                                        </td>
                                         </tr>
                                         <?php endforeach;?>
 							    </table>
@@ -146,19 +183,11 @@
 						
                                 <table width="1000" style="border:1px solid #CCCCCC">
                     
-                                    <tr>
-                                        <td width="100">TOTAL MARKS:</td>
-                                        <td width="100" align="center"><div  style="border-bottom: 1px dotted #D2CBCB">Mark</div></td>
-                                        <td width="150">SCORE OBTAINABLE:</td>
-                                        <td width="150" align="center"><div  style="border-bottom: 1px dotted #D2CBCB">Sum</div></div></td>
-                                        <td width="150">AVERAGE SCORE:</td>
-                                        <td width="300"><div  style="border-bottom: 1px dotted #D2CBCB">Average</div></td>
-                            
-                                    </tr>
                         
                                     <tr>
                                         <td width="150">NUMBER IN CLASS:</td>
-                                        <td align="center"><div  style="border-bottom: 1px dotted #D2CBCB">Number</div></td>
+                                        <?php $number_in_class = $this->db->get_where('student', array('class_id' =>$class_id))->num_rows();?>
+                                        <td align="center"><div  style="border-bottom: 1px dotted #D2CBCB"><?php echo $number_in_class;?></div></td>
                                         <td>CLASS POSITION:</td>
                                         <td align="center"><div  style="border-bottom: 1px dotted #D2CBCB">&nbsp;</div></td>
                                     </tr>
@@ -186,18 +215,21 @@
 							<table width="1000" style="border:1px solid #CCCCCC">
 								<tr>
 									<td>RESUMPTION DATE:</td>
-									<td><div  style="border-bottom: 1px dotted #D2CBCB">Term</div></td>
+									<td><div>________________</div></td>
 									<td>OUTSTANDING FEE:</td>
-									<td><div  style="border-bottom: 1px dotted #D2CBCB"><strong style="color:red">Due</strong></div></td>
-									<td >TERM:</td>
-									<td><div  style="border-bottom: 1px dotted #D2CBCB">Term</div></td>
-						
+                                    <?php $select_student_due_payment = $this->db->select_sum('due');
+                                                                        $this->db->from('invoice');
+                                                                        $this->db->where(array('student_id' => $student_id ));
+                                                                        $query = $this->db->get();
+                                                                        $display_student_due = $query->row()->due;?>
+                                    
+									<td><div  style="border-bottom: 1px dotted #D2CBCB"><strong style="color:red"><?php echo $system_currency . ' ' . $display_student_due;?></strong></div></td>						
 								</tr>
 								<tr>
 									<td>SIGNATURE:</td>
-									<td><div  style="border-bottom: 1px dotted #D2CBCB">Sign</div></td>
+									<td><div>_________________</div></td>
 									<td>DATE:</td>
-									<td><div  style="border-bottom: 1px dotted #D2CBCB">Date</div></td>
+									<td><div  style="border-bottom: 1px dotted #D2CBCB"><?php echo date('Y-m-d');?></div></td>
 					   
 								</tr>
 							</table>

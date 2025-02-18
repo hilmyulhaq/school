@@ -5,6 +5,7 @@ $footer         = $this->db->get_where('settings', array('type' => 'footer'))->r
 $text_align     = $this->db->get_where('settings', array('type' => 'text_align'))->row()->description;
 $loginType      = $this->session->userdata('login_type');
 $running_year   = $this->db->get_where('settings', array('type' => 'session'))->row()->description;
+$system_currency = $this->db->get_where('settings', array('type' =>'currency'))->row()->description;
 ?>
 <?php include 'css.php'; ?>
 

@@ -326,7 +326,7 @@ incididunt ut labore et dolore magna aliqua. </p>
 	<script src="js/dl-menu/modernizr.custom.js"></script>
 	<script src="js/dl-menu/jquery.dlmenu.js"></script>
 	<!--Map JavaScript-->
-    <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBO5my0LQFXOcB2mi7EHuvJh9EkwluBrnc"></script>
+    <script src="//maps.googleapis.com/maps/api/js?key="></script>
     <!--Time Counter Javascript-->
     <script src="js/jquery.downCount.js"></script>
     <!--Pretty Photo Javascript-->

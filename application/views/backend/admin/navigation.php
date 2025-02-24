@@ -48,19 +48,57 @@
             <li> <a href="<?php echo base_url();?>admin/dashboard" class="waves-effect"><i class="ti-dashboard p-r-10"></i> <span class="hide-menu"><?php echo get_phrase('Dashboard') ;?></span></a> </li>
         <?php endif;?> 
     <!---  Permission for Admin Dashboard ends here ------>
+
+    <li class="<?php if($page_name == 'wifi')echo 'active';?>">
+                <a href="<?php echo base_url();?>admin/wifi" >
+                    <i class="fa fa-wifi p-r-10"></i>
+                    <span class="hide-menu"><?php echo get_phrase('manage_wifi');?></span>
+                </a>    
+            </li>
+
+    <!-- manage permits  -->
+    <li> <a href="javascript:void(0);" class="waves-effect"><i class="fa fa-file" data-icon="7"></i> <span class="hide-menu"> <?php echo get_phrase(' Manage Permits');?> <span class="fa arrow"></span></span></a>
+                        <ul class=" nav nav-second-level<?php
+            if (    
+                    $page_name == 'student_permits'||
+                    $page_name == 'employee_permits') echo 'opened active';
+            ?> ">
+                            
+        
+        <li class="<?php if ($page_name == 'student_permits') echo 'active';?>"> 
+
+            <a href="<?php echo base_url();?>admin/student_permits">
+                <i class="fa fa-angle-double-right p-r-10"></i>
+                <span class="hide-menu"><?php echo get_phrase('student_permits');?></span>
+
+            </a> 
+        </li>
+
+       <li class="<?php if ($page_name == 'employee_permits') echo 'active'; ?> ">
+                <a href="<?php echo base_url(); ?>admin/employee_permits">
+                <i class="fa fa-angle-double-right p-r-10"></i>
+                      <span class="hide-menu"><?php echo get_phrase('employee_permits'); ?></span>
+                </a>
+        </li>
+                           
+        </ul>
+    </li>
+    <!-- manage permits  -->
                     
      <!---  Permission for Admin Manage Academics starts here ------>
      <?php $check_admin_permission = $this->db->get_where('admin_role', array('admin_id' => $this->session->userdata('login_user_id')))->row()->manage_academics;?>
      <?php if($check_admin_permission == '1'):?>   
         <li> <a href="javascript:void(0);" class="waves-effect"><i class="fa fa-mortar-board" data-icon="7"></i> <span class="hide-menu"> <?php echo get_phrase('Manage Academics');?> <span class="fa arrow"></span></span></a>
                         <ul class=" nav nav-second-level<?php
-            if (    $page_name == 'enquiry_category'||
+            if (    
+                    $page_name == 'enquiry_category'||
                     $page_name == 'list_enquiry'||
                     $page_name == 'club'||
                     $page_name == 'circular'||
                     $page_name == 'academic_syllabus') echo 'opened active';
             ?> ">
                             
+        
         <li class="<?php if ($page_name == 'enquiry_category') echo 'active';?>"> 
 
             <a href="<?php echo base_url();?>admin/enquiry_category">

@@ -43,7 +43,7 @@ $system_title = $this->db->get_where('settings', array('type' => 'system_title')
     <div class="white-box">
 	 <h4 class="box-title m-b-20" align="center">
 					<img src="<?php echo base_url() ?>uploads/logo.png" class="img-circle" width="70" height="70"/></h4>
-					<h5 align="center"><a href=""><?php echo $system_name;?></a></h5>
+					<h5 align="center"><a href="">Sistem Informasi Diniyah pada Pondok Pesantren Nurul Hikmah</a></h5>
 					
 					<br><br>
 					

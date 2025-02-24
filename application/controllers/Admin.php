@@ -135,6 +135,45 @@ class Admin extends CI_Controller {
     }
 
 
+    // wifi
+
+    function wifi($param1 = null, $param2 = null, $param3 = null){
+
+        if($param1 == 'insert'){
+       
+            $this->crud_model->insert_wifi();
+    
+            $this->session->set_flashdata('flash_message', get_phrase('Data saved successfully'));
+            redirect(base_url(). 'admin/wifi', 'refresh');
+        }
+    
+        if($param1 == 'update'){
+    
+           $this->crud_model->update_wifi($param2);
+    
+    
+            $this->session->set_flashdata('flash_message', get_phrase('Data updated successfully'));
+            redirect(base_url(). 'admin/wifi', 'refresh');
+    
+            }
+    
+        if($param1 == 'delete'){
+    
+           $this->crud_model->delete_wifi($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('Data deleted successfully'));
+            redirect(base_url(). 'admin/wifi', 'refresh');
+    
+            }
+    
+            $page_data['page_name']     = 'wifi';
+            $page_data['page_title']    = get_phrase('Manage Wifi');
+            $page_data['enquiry_category']  = $this->db->get('wifi_accounts')->result_array();
+            $this->load->view('backend/index', $page_data);
+    
+        }
+    
+
+
 
     function club ($param1 = null, $param2 = null, $param3 = null){
 

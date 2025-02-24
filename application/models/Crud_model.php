@@ -183,6 +183,33 @@ class Crud_model extends CI_Model {
         $this->db->insert('enquiry_category', $page_data);
     }
 
+
+    // wifi
+
+    function insert_wifi(){
+
+        $page_data['username']  =   $this->input->post('username');
+        $page_data['password']   =   $this->input->post('password');
+        $page_data['profile']      =   $this->input->post('profile');
+        $this->db->insert('wifi_accounts', $page_data);
+    }
+
+    function update_wifi($param2){
+
+        $page_data['username']  =   $this->input->post('username');
+        $page_data['password']   =   $this->input->post('password');
+        $page_data['profile']      =   $this->input->post('profile');
+        $this->db->where('id', $param2);
+        $this->db->update('wifi_accounts', $page_data);
+    }
+
+    function delete_wifi($param2){
+        $this->db->where('id', $param2);
+        $this->db->delete('wifi_accounts');
+
+    }
+
+    // end model wifi
     function update_category($param2){
         $page_data['category']  =   $this->input->post('category');
         $page_data['purpose']   =   $this->input->post('purpose');

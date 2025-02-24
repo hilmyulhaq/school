@@ -210,6 +210,46 @@ class Crud_model extends CI_Model {
     }
 
     // end model wifi
+
+
+    // student permits
+
+    function insert_student_permit() {
+        $data = [
+            'student_id'  => $this->input->post('student_id'),
+            'permit_type' => $this->input->post('permit_type'),
+            'reason'      => $this->input->post('reason'),
+            'start_date'  => $this->input->post('start_date'),
+            'end_date'    => $this->input->post('end_date'),
+            'status'      => $this->input->post('status'),
+            'created_at'  => date('Y-m-d H:i:s') // Menambahkan timestamp otomatis
+        ];
+        
+        $this->db->insert('student_permits', $data);
+    }
+
+    function update_student_permit($param2) {
+        $data = [
+            'student_id'  => $this->input->post('student_id'),
+            'permit_type' => $this->input->post('permit_type'),
+            'reason'      => $this->input->post('reason'),
+            'start_date'  => $this->input->post('start_date'),
+            'end_date'    => $this->input->post('end_date'),
+            'status'      => $this->input->post('status'),
+            'created_at'  => date('Y-m-d H:i:s') // Menambahkan timestamp otomatis
+        ];
+        $this->db->where('id', $param2);
+        $this->db->update('student_permits', $data);
+    }
+
+    function delete_student_permit($param2){
+        $this->db->where('id', $param2);
+        $this->db->delete('student_permits');
+
+    }
+
+    
+    // student permits
     function update_category($param2){
         $page_data['category']  =   $this->input->post('category');
         $page_data['purpose']   =   $this->input->post('purpose');

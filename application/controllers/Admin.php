@@ -172,6 +172,45 @@ class Admin extends CI_Controller {
     
         }
     
+    // student permit
+    function student_permits($param1 = null, $param2 = null, $param3 = null){
+
+        if($param1 == 'insert'){
+       
+            $this->crud_model->insert_student_permit();
+    
+            $this->session->set_flashdata('flash_message', get_phrase('Data saved successfully'));
+            redirect(base_url(). 'admin/student_permits', 'refresh');
+        }
+    
+        if($param1 == 'update'){
+    
+           $this->crud_model->update_student_permit($param2);
+    
+    
+            $this->session->set_flashdata('flash_message', get_phrase('Data updated successfully'));
+            redirect(base_url(). 'admin/student_permits', 'refresh');
+    
+            }
+    
+        if($param1 == 'delete'){
+    
+           $this->crud_model->delete_student_permit($param2);
+            $this->session->set_flashdata('flash_message', get_phrase('Data deleted successfully'));
+            redirect(base_url(). 'admin/student_permits', 'refresh');
+    
+            }
+    
+            $page_data['page_name']     = 'student_permits';
+            $page_data['page_title']    = get_phrase('Manage Student Permits');
+            $this->db->select('student_permits.*, student.name');
+            $this->db->from('student_permits');
+            $this->db->join('student', 'student.student_id = student_permits.student_id', 'left');
+            $page_data['student_permits']  = $this->db->get()->result_array();
+            $this->load->view('backend/index', $page_data);
+    
+        }
+    // end student permit
 
 
 

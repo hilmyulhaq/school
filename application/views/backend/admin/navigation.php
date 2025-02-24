@@ -74,12 +74,7 @@
             </a> 
         </li>
 
-       <li class="<?php if ($page_name == 'employee_permits') echo 'active'; ?> ">
-                <a href="<?php echo base_url(); ?>admin/employee_permits">
-                <i class="fa fa-angle-double-right p-r-10"></i>
-                      <span class="hide-menu"><?php echo get_phrase('employee_permits'); ?></span>
-                </a>
-        </li>
+      
                            
         </ul>
     </li>
